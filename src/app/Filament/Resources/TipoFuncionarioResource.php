@@ -39,7 +39,7 @@ class TipoFuncionarioResource extends Resource
         return $form
         ->schema([
             Section::make([
-                Forms\Components\TextInput::make('Descrição')
+                Forms\Components\TextInput::make('ds_tipo')->label('Descrição')
                     ->required()
                     ->maxLength(150)
                     ->autofocus(),

@@ -1,13 +1,5 @@
 FROM php:8.2.11-fpm
 
-# Download do Certificado de Segurança SGG
-RUN curl https://docs.seinfra.go.gov.br/index.php/s/E6634o9DQ72Sf8L/download/SEGPLANCA.crt > /usr/local/share/ca-certificates/SEGPLANCA.crt
-RUN curl https://docs.seinfra.go.gov.br/index.php/s/E6634o9DQ72Sf8L/download/SEGPLANCA.crt > /usr/share/ca-certificates/mozilla/SEGPLANCA.crt
-# Ativação do Certificado
-RUN update-ca-certificates
-
-
-
 # Install composer
 RUN echo "\e[1;33mInstall COMPOSER\e[0m"
 RUN cd /tmp \
