@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-livewire
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - app
+      - db
+  db:
+    image: postgres
+    container_name: postgres-livewire
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: livewire
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+
+  app:
+    container_name: php-livewire
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/var/www
+    ports:
+      - "9001:9000"
+      - "5173:5173"
+    working_dir: /var/www
