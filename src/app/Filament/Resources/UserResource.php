@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 use function Livewire\after;
 
@@ -23,6 +24,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
     public static function getNavigationLabel(): string
     {
         return 'Usuários';
@@ -50,15 +52,20 @@ class UserResource extends Resource
                     Forms\Components\TextInput::make('email')
                         ->email()
                         ->required()
+                        ->unique(ignoreRecord: true)
                         ->maxLength(255),
                     Toggle::make('is_active')->label('Status'),
                     Forms\Components\TextInput::make('password')
+                        ->label('senha')
                         ->password()
-                        ->required()
-                        ->maxLength(255),
+                        ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                        ->dehydrated(fn($state) => filled($state))
+                        ->required(fn(string $context): bool => $context === 'create'),
                     Forms\Components\Select::make('roles')
                         ->multiple()
-                        ->relationship('roles', 'name')
+                        ->relationship('roles',
+                                       'name', 
+                        fn(Builder $query) => auth()->user()->hasRole('Admin') ? null : $query->where('name', '!=', 'Admin'))
                         ->preload()
                 ])
             ]);
@@ -76,6 +83,10 @@ class UserResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->label('E-mail'),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Tipo Usuario'),
                 Tables\Columns\IconColumn::make('is_active')->boolean()->label('Status'),
                 Tables\Columns\ToggleColumn::make('is_active')->label('Editar Status'),
                 Tables\Columns\TextColumn::make('created_at')
@@ -116,5 +127,17 @@ class UserResource extends Resource
         return [
             'index' => Pages\ManageUsers::route('/'),
         ];
+    }
+
+    /** Somente usuario admin pode fazer alteraçoes nos usuarios 
+     * 
+    */
+    public static function getEloquentQuery(): Builder
+    {
+        return auth()->user()->hasRole('Admin') 
+        ? parent::getEloquentQuery() 
+        : parent::getEloquentQuery()->whereHas('roles', 
+        fn(Builder $query) => $query->where('name', '!=', 'Admin')
+        );
     }
 }

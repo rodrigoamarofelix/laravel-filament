@@ -19,13 +19,31 @@ class RoleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    protected static ?string $modelLabel = 'Função';
+    protected static ?string $pluralModelLabel = 'Funções';
+    protected static ?string $navigationBadgeTooltip = 'Número de funções';
+    protected static ?string $navigationGroup = 'Administração';
+    protected static ?string $slug = 'funcao';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nome')
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
+                Forms\Components\Select::make('permissions')
+                    ->label('Permissão')
+                    ->multiple()
+                    ->relationship('permissions', 'name')
+                    ->preload()
             ]);
     }
 
@@ -37,12 +55,12 @@ class RoleResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado_Em')
-                    ->dateTime()
+                    ->dateTime('d/m/Y H:m')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Alterado_Em')
-                    ->dateTime()
+                    ->dateTime('d/m/Y H:m')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

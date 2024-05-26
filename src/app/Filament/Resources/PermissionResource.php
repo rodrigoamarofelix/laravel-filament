@@ -19,13 +19,32 @@ class PermissionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    protected static ?string $navigationBadgeTooltip = 'Número de permissões';
+
+    protected static ?string $modelLabel = 'Permissão';
+    protected static ?string $pluralModelLabel = 'Permissões';
+
+    protected static ?string $navigationGroup = 'Administração';
+    protected static ?string $slug = 'permissao';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Permissão')
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
+                Forms\Components\Select::make('roles')
+                    ->label('Função')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->preload()
             ]);
     }
 
@@ -36,11 +55,13 @@ class PermissionResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Criado_Em')
+                    ->dateTime('d/m/Y H:m')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Alterado_Em')
+                    ->dateTime('d/m/Y H:m')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

@@ -30,7 +30,7 @@ class TipoFuncionarioResource extends Resource
     }
 
     protected static ?string $navigationBadgeTooltip = 'Número de tipo de funcionário';
-    protected static ?string $navigationGroup = 'Administração';
+    //protected static ?string $navigationGroup = 'Administração';
     protected static ?string $slug = 'tipo_funcionario';
     protected static ?string $modelLabel = 'Tipo de Funcionario';
 

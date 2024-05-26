@@ -19,6 +19,12 @@ class PessoaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    protected static ?string $navigationBadgeTooltip = 'Número de pessoas';
+
     public static function form(Form $form): Form
     {
         return $form
