@@ -4,8 +4,8 @@ Projeto inicial usando Laravel, livewire class e Filament.
 
 ## Executando projeto
 
-1. `docker compose upp --build -d`
-2. `docker compose exec app php composer install`
+1. `docker compose up --build -d`
+2. `docker compose exec app composer install`
 3. `docker compose exec app php artisan migrate`
 
 ## Executando comandas dentro do container
