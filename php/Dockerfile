@@ -4,8 +4,6 @@ RUN curl https://docs.seinfra.go.gov.br/index.php/s/E6634o9DQ72Sf8L/download/SEG
 RUN curl https://docs.seinfra.go.gov.br/index.php/s/E6634o9DQ72Sf8L/download/SEGPLANCA.crt > /usr/share/ca-certificates/mozilla/SEGPLANCA.crt
 # Ativação do Certificado
 RUN update-ca-certificates
-# Ativação do Certificado
-
 
 # Install composer
 RUN echo "\e[1;33mInstall COMPOSER\e[0m"
